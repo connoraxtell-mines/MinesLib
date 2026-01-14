@@ -8,7 +8,7 @@ CXXEXTS:=cpp c++ cc
 # probably shouldn't modify these, but you may need them below
 ROOT=.
 FWDIR:=$(ROOT)/firmware
-BINDIR=$(ROOT)/bin
+BINDIR=$$(PROJECT_BIN_DIR)
 SRCDIR=$(ROOT)/exampleProject/src
 INCDIR = $(ROOT)/vendor
 INCDIR += ../include
