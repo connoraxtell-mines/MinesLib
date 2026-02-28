@@ -12,6 +12,7 @@ BINDIR=$$(PROJECT_BIN_DIR)
 SRCDIR=$(ROOT)/exampleProject/src
 INCDIR = $(ROOT)/vendor
 INCDIR += ../include
+INCDIR += /include
 
 WARNFLAGS+=
 EXTRA_CFLAGS=
