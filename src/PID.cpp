@@ -32,7 +32,14 @@ double PID::calculate(double measurement)
 
     double derivative = error - m_previousError;
 
-    std::clamp(m_integral, -m_integralLimit, m_integralLimit);
+    if(m_integral > m_integralLimit)
+    {
+        m_integral = m_integralLimit;
+    }
+    if(m_integral < -m_integralLimit)
+    {
+        m_integral = -m_integralLimit;
+    }
     
     std::cout << "-------------------------------"<< std::endl;
     std::cout << "Error: " << error << std::endl;
