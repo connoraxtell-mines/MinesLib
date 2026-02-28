@@ -7,3 +7,11 @@
 
 #include "PID.h"
 #include "Drivetrain.h"
+#include "stdio.h"
+
+#ifdef MINESLIB_TEST_LINKING
+inline void MinesLibTestLinking()
+{
+    printf("MinesLib linked successfully.\n");
+}
+#endif
