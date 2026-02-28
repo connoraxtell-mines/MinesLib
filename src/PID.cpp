@@ -1,5 +1,6 @@
 #include "PID.h"
 #include <algorithm>
+#include <iostream>
 
 namespace Mines
 {
@@ -18,6 +19,7 @@ void PID::setTarget(double target)
 
 void PID::reset()
 {
+    std::cout << "reset" << std::endl;
     m_previousError = 0.0;
     m_integral = 0.0;
 }
@@ -32,6 +34,12 @@ double PID::calculate(double measurement)
 
     std::clamp(m_integral, -m_integralLimit, m_integralLimit);
     
+    std::cout << "-------------------------------"<< std::endl;
+    std::cout << "Error: " << error << std::endl;
+    std::cout << "Integral: " << m_integral << std::endl;
+    std::cout << "Derivative: " << derivative << std::endl;
+    std::cout << "-------------------------------" << std::endl;
+
     return (m_kp * error) + (m_ki * m_integral) + (m_kd * derivative);
 }
 
