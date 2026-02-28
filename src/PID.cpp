@@ -41,12 +41,6 @@ double PID::calculate(double measurement)
         m_integral = -m_integralLimit;
     }
     
-    std::cout << "-------------------------------"<< std::endl;
-    std::cout << "Error: " << error << std::endl;
-    std::cout << "Integral: " << m_integral << std::endl;
-    std::cout << "Derivative: " << derivative << std::endl;
-    std::cout << "-------------------------------" << std::endl;
-
     return (m_kp * error) + (m_ki * m_integral) + (m_kd * derivative);
 }
 
