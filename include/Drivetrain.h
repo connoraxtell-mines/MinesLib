@@ -1,6 +1,8 @@
 #pragma once
 
 #include "pros/motor_group.hpp"
+#include "pros/imu.hpp"
+#include "pros/rotation.hpp"
 #include "PID.h"
 #include "TaskBase.h"
 
