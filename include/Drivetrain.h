@@ -1,10 +1,18 @@
 #pragma once
 
+#define DEBUG
+
 #include "pros/motor_group.hpp"
 #include "pros/imu.hpp"
 #include "pros/rotation.hpp"
 #include "PID.h"
 #include "TaskBase.h"
+
+#ifdef DEBUG
+#define PRINT_D(out) std::cout << out << "\n"
+#else
+#define PRINT_D(out)
+#endif
 
 namespace Mines
 {
@@ -12,30 +20,33 @@ class Drivetrain
 {
     public:
 
-        Drivetrain(pros::AbstractMotor& leftMotors,
-                  pros::AbstractMotor& rightMotors,
-                  pros::Rotation& rotationSensor,
-                  pros::Imu& Imu,
-                  double gearRatio = 1.0, double wheelDiameter = 3.25);
-
-        void setVelocity(double leftVelocity, double rightVelocity);
+        Drivetrain(pros::AbstractMotor* leftMotors,
+                  pros::AbstractMotor* rightMotors,
+                  pros::Rotation* rotationSensor,
+                  pros::Imu* imu,
+                  double gearRatio = 1.0, double wheelDiameter = 2.125);
 
         void driveDistance(double distance);
 
-        void turnFor(double angle);
+
+        void capVoltage(int32_t voltageCap) {m_voltageCap = voltageCap;};
         void turnTo(double angle);
 
         void setDrivePID(double kp, double ki, double kd) { m_drivePID.setTunings(kp,ki,kd); };
         void setTurnPID(double kp, double ki, double kd) { m_turnPID.setTunings(kp,ki,kd); };
     private:
-        pros::MotorGroup m_leftMotors;
-        pros::MotorGroup m_rightMotors;
+        int32_t m_voltageCap = 127;
+        pros::AbstractMotor* m_leftMotors;
+        pros::AbstractMotor* m_rightMotors;
+        pros::Rotation* m_rotation;
+        pros::Imu* m_imu;
         Mines::PID m_drivePID;
         Mines::PID m_turnPID;
 
+
         // stored ratio and a convenient multiplier (wheel revs per motor rev)
-        double m_gearRatio;    // motor revs per wheel rev
-        double m_wheelDiameter; // wheel revs per motor rev
+        double m_wheelDiameter;    // motor revs per wheel rev
+        double m_gearRatio; // wheel revs per motor rev
 
 };
 }

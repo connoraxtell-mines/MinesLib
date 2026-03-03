@@ -1,4 +1,7 @@
 #include "Drivetrain.h"
+
+#include <numbers>
+
 namespace Mines{
 //=======================================
 // Member Variables
@@ -10,40 +13,80 @@ namespace Mines{
 //Mines::PID m_turnPID;
 
 
-Drivetrain::Drivetrain(pros::AbstractMotor& leftMotors,
-                  pros::AbstractMotor& rightMotors,
-                  pros::Rotation& rotationSensor,
-                  pros::Imu& Imu,
-                  double gearRatio = 1.0, double wheelDiameter = 3.25)
-: m_leftMotors(leftMotors),
-  m_rightMotors(rightMotors),
-  m_drivePID(5, .001, .5, .5),
+Drivetrain::Drivetrain(pros::AbstractMotor* leftMotors,
+                  pros::AbstractMotor* rightMotors,
+                  pros::Rotation* rotationSensor,
+                  pros::Imu* imu,
+                  double gearRatio, double wheelDiameter)
+:
+  m_drivePID(9, .001, .05, .5),
   m_turnPID(5, .001, .5, .5),
-  m_gearRatio(gearRatio)
+  m_gearRatio(gearRatio),
+  m_wheelDiameter(wheelDiameter)
 {
-
-}
-
-
-void Drivetrain::setVelocity(double leftVelocity, double rightVelocity)
-{
-
-    return;
+    m_leftMotors = leftMotors;
+    m_rightMotors = rightMotors;
+    m_rotation = rotationSensor;
+    m_imu = imu;
+    m_imu->reset(true);
 }
 
 void Drivetrain::driveDistance(double distance)
 {
+    double distancePerTurn = (m_wheelDiameter * std::numbers::pi) / m_gearRatio;
+    double target = m_rotation->get_position() + (((distance / distancePerTurn) * 360 )* 100); 
+
+    m_drivePID.setTarget(target);
+
+    uint32_t time = 0;
+    while(time <= 60)
+    {
+        int32_t motorPower = std::clamp((int32_t)m_drivePID.calculate(static_cast<double>(m_rotation->get_position())),-m_voltageCap,m_voltageCap);
+        m_leftMotors->move(motorPower);
+        m_rightMotors->move(motorPower);
+
+        if(m_rotation->get_position() <= target + .2 && m_rotation->get_position() >= target - .2)
+        {
+            time += 20;
+        }
+        else
+        {
+            time = 0;
+        }
+
+        pros::delay(20);
+    }
 
     return;
 }
 
-void Drivetrain::turnFor(double angle)
-{
-
-    return;
-}
 void Drivetrain::turnTo(double angle)
 {
+    double target = m_imu->get_rotation() + angle;
+
+    m_turnPID.setTarget(target);
+
+    uint32_t time = 0;
+
+    while(time <= 40)
+    {
+        PRINT_D(m_imu->get_heading());
+        PRINT_D(m_imu->get_rotation());
+        int32_t motorPower = std::clamp((int32_t)m_turnPID.calculate(m_imu->get_rotation()),-m_voltageCap,m_voltageCap);
+        m_leftMotors->move(motorPower);
+        m_rightMotors->move(-motorPower);
+
+        if(m_imu->get_rotation() <= target + .5 && m_imu->get_rotation() >= target - .5)
+        {
+            time += 20;
+        }
+        else
+        {
+            time = 0;
+        }
+
+        pros::delay(20);
+    }
 
     return;
 }
