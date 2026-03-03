@@ -11,15 +11,15 @@ namespace Mines{
 
 
 Drivetrain::Drivetrain(pros::AbstractMotor& leftMotors,
-                             pros::AbstractMotor& rightMotors,
-                             double gearRatio)
+                  pros::AbstractMotor& rightMotors,
+                  double gearRatio = 1.0, double wheelDiameter = 3.25)
 : m_leftMotors(leftMotors),
   m_rightMotors(rightMotors),
   m_drivePID(5, .001, .5, .5),
   m_turnPID(5, .001, .5, .5),
   m_gearRatio(gearRatio)
 {
-    
+
 }
 
 
@@ -44,16 +44,5 @@ void Drivetrain::turnTo(double angle)
 {
 
     return;
-}
-
-// conversion helpers (could be used by the PID routines, etc.)
-double Drivetrain::motorRevsToWheelRevs(double motorRevs) const
-{
-    return motorRevs * m_wheelPerMotor;
-}
-
-double Drivetrain::wheelRevsToMotorRevs(double wheelRevs) const
-{
-    return wheelRevs / m_wheelPerMotor;
 }
 }

@@ -10,7 +10,7 @@ class Drivetrain
 {
     public:
 
-        Drivetrain(pros::AbstractMotor& LeftMotors,
+        Drivetrain(pros::AbstractMotor& leftMotors,
                   pros::AbstractMotor& rightMotors,
                   double gearRatio = 1.0, double wheelDiameter = 3.25);
 
@@ -21,6 +21,8 @@ class Drivetrain
         void turnFor(double angle);
         void turnTo(double angle);
 
+        void setDrivePID(double kp, double ki, double kd) { m_drivePID.setTunings(kp,ki,kd); };
+        void setTurnPID(double kp, double ki, double kd) { m_turnPID.setTunings(kp,ki,kd); };
     private:
         pros::MotorGroup m_leftMotors;
         pros::MotorGroup m_rightMotors;
