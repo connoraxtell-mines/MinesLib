@@ -12,6 +12,8 @@ namespace Mines{
 
 Drivetrain::Drivetrain(pros::AbstractMotor& leftMotors,
                   pros::AbstractMotor& rightMotors,
+                  pros::Rotation& rotationSensor,
+                  pros::Imu& Imu,
                   double gearRatio = 1.0, double wheelDiameter = 3.25)
 : m_leftMotors(leftMotors),
   m_rightMotors(rightMotors),
