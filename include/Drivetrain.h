@@ -26,14 +26,14 @@ class Drivetrain
                   pros::Imu* imu,
                   double gearRatio = 1.0, double wheelDiameter = 2.125);
 
-        void driveDistance(double distance);
+        void driveDistance(double distance, int32_t tol = 5, uint32_t settleTime = 60);
 
 
         void capVoltage(int32_t voltageCap) {m_voltageCap = voltageCap;};
-        void turnTo(double angle);
+        void turnTo(double angle, double tol = 1.0, uint32_t settleTime = 60);
 
-        void setDrivePID(double kp, double ki, double kd) { m_drivePID.setTunings(kp,ki,kd); };
-        void setTurnPID(double kp, double ki, double kd) { m_turnPID.setTunings(kp,ki,kd); };
+        void setDrivePID(double kp, double ki, double kd, double integralLim) { m_drivePID.setTunings(kp,ki,kd); m_drivePID.setIntegralLimit(integralLim);};
+        void setTurnPID(double kp, double ki, double kd, double integralLim) { m_turnPID.setTunings(kp,ki,kd); m_drivePID.setIntegralLimit(integralLim); };
     private:
         int32_t m_voltageCap = 127;
         pros::AbstractMotor* m_leftMotors;

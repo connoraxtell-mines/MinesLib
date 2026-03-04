@@ -19,8 +19,8 @@ Drivetrain::Drivetrain(pros::AbstractMotor* leftMotors,
                   pros::Imu* imu,
                   double gearRatio, double wheelDiameter)
 :
-  m_drivePID(9, .001, .05, .5),
-  m_turnPID(5, .001, .5, .5),
+  m_drivePID(9, .001, .05, 20),
+  m_turnPID(5, .001, .5, 20),
   m_gearRatio(gearRatio),
   m_wheelDiameter(wheelDiameter)
 {
@@ -31,7 +31,7 @@ Drivetrain::Drivetrain(pros::AbstractMotor* leftMotors,
     m_imu->reset(true);
 }
 
-void Drivetrain::driveDistance(double distance)
+void Drivetrain::driveDistance(double distance, int32_t tol, uint32_t settleTime)
 {
     double distancePerTurn = (m_wheelDiameter * std::numbers::pi) / m_gearRatio;
     double target = m_rotation->get_position() + (((distance / distancePerTurn) * 360 )* 100); 
@@ -39,13 +39,13 @@ void Drivetrain::driveDistance(double distance)
     m_drivePID.setTarget(target);
 
     uint32_t time = 0;
-    while(time <= 60)
+    while(time <= settleTime)
     {
         int32_t motorPower = std::clamp((int32_t)m_drivePID.calculate(static_cast<double>(m_rotation->get_position())),-m_voltageCap,m_voltageCap);
         m_leftMotors->move(motorPower);
         m_rightMotors->move(motorPower);
 
-        if(m_rotation->get_position() <= target + .2 && m_rotation->get_position() >= target - .2)
+        if(m_rotation->get_position() <= target + tol && m_rotation->get_position() >= target - tol)
         {
             time += 20;
         }
@@ -56,11 +56,13 @@ void Drivetrain::driveDistance(double distance)
 
         pros::delay(20);
     }
+    m_leftMotors->move(0);
+    m_rightMotors->move(0);
 
     return;
 }
 
-void Drivetrain::turnTo(double angle)
+void Drivetrain::turnTo(double angle, double tol, uint32_t settleTime)
 {
     double target = m_imu->get_rotation() + angle;
 
@@ -68,7 +70,7 @@ void Drivetrain::turnTo(double angle)
 
     uint32_t time = 0;
 
-    while(time <= 40)
+    while(time <= settleTime)
     {
         PRINT_D(m_imu->get_heading());
         PRINT_D(m_imu->get_rotation());
@@ -76,7 +78,7 @@ void Drivetrain::turnTo(double angle)
         m_leftMotors->move(motorPower);
         m_rightMotors->move(-motorPower);
 
-        if(m_imu->get_rotation() <= target + .5 && m_imu->get_rotation() >= target - .5)
+        if(m_imu->get_rotation() <= target + tol && m_imu->get_rotation() >= target - tol)
         {
             time += 20;
         }
