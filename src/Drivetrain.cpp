@@ -47,14 +47,14 @@ void Drivetrain::driveDistance(double distance, int32_t tol, uint32_t settleTime
 
         if(m_rotation->get_position() <= target + tol && m_rotation->get_position() >= target - tol)
         {
-            time += 20;
+            time += 5;
         }
         else
         {
             time = 0;
         }
 
-        pros::delay(20);
+        pros::delay(5);
     }
     m_leftMotors->move(0);
     m_rightMotors->move(0);
@@ -80,14 +80,14 @@ void Drivetrain::turnTo(double angle, double tol, uint32_t settleTime)
 
         if(m_imu->get_rotation() <= target + tol && m_imu->get_rotation() >= target - tol)
         {
-            time += 20;
+            time += 5;
         }
         else
         {
             time = 0;
         }
 
-        pros::delay(20);
+        pros::delay(5);
     }
 
     return;

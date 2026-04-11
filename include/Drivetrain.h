@@ -1,6 +1,6 @@
 #pragma once
 
-#define DEBUG
+//#define DEBUG
 
 #include "pros/motor_group.hpp"
 #include "pros/imu.hpp"
@@ -24,16 +24,16 @@ class Drivetrain
                   pros::AbstractMotor* rightMotors,
                   pros::Rotation* rotationSensor,
                   pros::Imu* imu,
-                  double gearRatio = 1.0, double wheelDiameter = 2.125);
+                  double gearRatio = 1.0, double wheelDiameter = 2.25);
 
-        void driveDistance(double distance, int32_t tol = 5, uint32_t settleTime = 60);
+        void driveDistance(double distance, int32_t tol = 5, uint32_t settleTime = 200);
 
 
         void capVoltage(int32_t voltageCap) {m_voltageCap = voltageCap;};
         void turnTo(double angle, double tol = 1.0, uint32_t settleTime = 60);
 
         void setDrivePID(double kp, double ki, double kd, double integralLim) { m_drivePID.setTunings(kp,ki,kd); m_drivePID.setIntegralLimit(integralLim);};
-        void setTurnPID(double kp, double ki, double kd, double integralLim) { m_turnPID.setTunings(kp,ki,kd); m_drivePID.setIntegralLimit(integralLim); };
+        void setTurnPID(double kp, double ki, double kd, double integralLim) { m_turnPID.setTunings(kp,ki,kd); m_turnPID.setIntegralLimit(integralLim); };
     private:
         int32_t m_voltageCap = 127;
         pros::AbstractMotor* m_leftMotors;
