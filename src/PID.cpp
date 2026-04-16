@@ -41,6 +41,8 @@ double PID::calculate(double measurement)
         m_integral = -m_integralLimit;
     }
     
+    m_previousError = error;
+    
     return (m_kp * error) + (m_ki * m_integral) + (m_kd * derivative);
 }
 
