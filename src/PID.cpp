@@ -19,7 +19,6 @@ void PID::setTarget(double target)
 
 void PID::reset()
 {
-    std::cout << "reset" << std::endl;
     m_previousError = 0.0;
     m_integral = 0.0;
 }

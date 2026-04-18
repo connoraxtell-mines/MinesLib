@@ -28,7 +28,6 @@ Drivetrain::Drivetrain(pros::AbstractMotor* leftMotors,
     m_rightMotors = rightMotors;
     m_rotation = rotationSensor;
     m_imu = imu;
-    m_imu->reset(true);
 }
 
 void Drivetrain::driveDistance(double distance, int32_t tol, uint32_t settleTime)
@@ -72,8 +71,6 @@ void Drivetrain::turnTo(double angle, double tol, uint32_t settleTime)
 
     while(time <= settleTime)
     {
-        PRINT_D(m_imu->get_heading());
-        PRINT_D(m_imu->get_rotation());
         int32_t motorPower = std::clamp((int32_t)m_turnPID.calculate(m_imu->get_rotation()),-m_voltageCap,m_voltageCap);
         m_leftMotors->move(motorPower);
         m_rightMotors->move(-motorPower);

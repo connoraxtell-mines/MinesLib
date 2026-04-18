@@ -26,11 +26,22 @@ class Drivetrain
                   pros::Imu* imu,
                   double gearRatio = 1.0, double wheelDiameter = 2.25);
 
-        void driveDistance(double distance, int32_t tol = 5, uint32_t settleTime = 200);
+
+        /**
+         * @brief initializes Drivetrain (call in init function)
+         */
+        void init() { m_imu->reset(true);};
+
+        /**
+         * @brief drives distance in inches
+         * @param tol Sets the tolerance in centidegrees?
+         * @param settleTime 
+         */
+        void driveDistance(double distance, int32_t tol = 5000, uint32_t settleTime = 200);
 
 
         void capVoltage(int32_t voltageCap) {m_voltageCap = voltageCap;};
-        void turnTo(double angle, double tol = 1.0, uint32_t settleTime = 60);
+        void turnTo(double angle, double tol = 1.0, uint32_t settleTime = 200);
 
         void setDrivePID(double kp, double ki, double kd, double integralLim) { m_drivePID.setTunings(kp,ki,kd); m_drivePID.setIntegralLimit(integralLim);};
         void setTurnPID(double kp, double ki, double kd, double integralLim) { m_turnPID.setTunings(kp,ki,kd); m_turnPID.setIntegralLimit(integralLim); };

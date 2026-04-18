@@ -49,7 +49,7 @@ private:
     double m_kp;
     double m_ki;
     double m_kd;
-    double m_previousError;
+    double m_previousError = 0.0;
     double m_integral;
     double m_target;
     double m_integralLimit;
