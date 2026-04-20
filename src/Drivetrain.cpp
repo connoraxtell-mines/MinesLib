@@ -1,6 +1,7 @@
 #include "Drivetrain.h"
 
 #include <numbers>
+#include <math.h>
 
 namespace Mines{
 //=======================================
@@ -57,11 +58,9 @@ void Drivetrain::driveDistance(double distance, int32_t tol, uint32_t settleTime
     }
     m_leftMotors->move(0);
     m_rightMotors->move(0);
-
-    return;
 }
 
-void Drivetrain::turnTo(double angle, double tol, uint32_t settleTime)
+void Drivetrain::turnFor(double angle, double tol, uint32_t settleTime)
 {
     double target = m_imu->get_rotation() + angle;
 
@@ -86,7 +85,34 @@ void Drivetrain::turnTo(double angle, double tol, uint32_t settleTime)
 
         pros::delay(5);
     }
-
-    return;
 }
+
+void Drivetrain::turnTo(double angle, double tol, uint32_t settleTime)
+{
+    double target = angle > 180 ? -angle: angle;
+    m_turnPID.setTarget(target);
+
+    uint32_t time = 0;
+
+    while(time <= settleTime)
+    {
+        double angle = fabs(m_imu->get_heading()) - 180;
+
+        int32_t motorPower = std::clamp((int32_t)m_turnPID.calculate(angle), -m_voltageCap, m_voltageCap);
+        m_leftMotors->move(motorPower);
+        m_rightMotors->move(-motorPower);
+
+        if(angle <= target + tol && angle >= target - tol)
+        {
+            time += 5;
+        }
+        else
+        {
+            time = 0;
+        }
+
+        pros::delay(5);
+    }
+}
+
 }
