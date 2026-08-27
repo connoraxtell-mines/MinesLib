@@ -62,6 +62,7 @@ void Drivetrain::driveDistance(double distance, int32_t tol, uint32_t settleTime
 
 void Drivetrain::turnFor(double angle, double tol, uint32_t settleTime)
 {
+    // Relative turning based on current angle being 0.
     double target = m_imu->get_rotation() + angle;
 
     m_turnPID.setTarget(target);
@@ -89,6 +90,9 @@ void Drivetrain::turnFor(double angle, double tol, uint32_t settleTime)
 
 void Drivetrain::turnTo(double angle, double tol, uint32_t settleTime)
 {
+    // Absolute turning based on starting angle being 0.
+    // Allows for (hopefully) more accurate autonomous routes.
+
     double target = angle > 180 ? -angle: angle;
     m_turnPID.setTarget(target);
 
